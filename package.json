@@ -1,0 +1,29 @@
+{
+  "name": "iw-mqtt-light-control",
+  "version": "0.0.1",
+  "description": "Light Control via zigbee2mqtt",
+  "author": "Benjamin Schmitz",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vortex375/iw-mqtt-light-control.git"
+  },
+  "scripts": {
+    "build": "rimraf dist && npm run build-ts",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\"",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "dependencies": {
+    "@deepstream/client": "^5.0.8",
+    "@deepstream/types": "^2.1.0",
+    "iw-base": "^0.0.1",
+    "lodash": "^4.17.15",
+    "mqtt": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.150",
+    "rimraf": "^3.0.2"
+  }
+}
