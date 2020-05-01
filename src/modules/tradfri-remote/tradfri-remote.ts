@@ -70,6 +70,7 @@ export class TradfriRemote extends Service {
 
   private handleMessage(message: any) {
     const lightState = this.lightRecord.get();
+    log.debug(message, `received action ${message.action}`);
     switch (message.action) {
       case 'toggle': {
         let state = lightState.state ?? 'OFF';
@@ -78,19 +79,19 @@ export class TradfriRemote extends Service {
         } else {
           state = 'ON';
         }
-        lightState.state = state;
+        this.setCommand({ state });
         break;
       }
       case 'brightness_up_click': {
         let brightness = lightState.brightness ?? 255;
         brightness = Math.min(255, brightness + 25);
-        lightState.brightness = brightness;
+        this.setCommand({ brightness });
         break;
       }
       case 'brightness_down_click': {
         let brightness = lightState.brightness ?? 255;
         brightness = Math.max(5, brightness - 25);
-        lightState.brightness = brightness;
+        this.setCommand({ brightness });
         break;
       }
       case 'brightness_up_hold': {
@@ -100,7 +101,7 @@ export class TradfriRemote extends Service {
         } else {
           brightness = 255;
         }
-        lightState.brightness = brightness;
+        this.setCommand({ brightness });
         break;
       }
       case 'brightness_down_hold': {
@@ -110,36 +111,29 @@ export class TradfriRemote extends Service {
         } else {
           brightness = 5;
         }
-        lightState.brightness = brightness;
+        this.setCommand({ brightness });
         break;
       }
       case 'arrow_left_click': {
         this.colorIndex = (this.colorIndex - 1 + COLORS.length) % COLORS.length;
-        this.setColor(lightState, COLORS[this.colorIndex]);
+        this.setCommand(COLORS[this.colorIndex]);
         break;
       }
       case 'arrow_right_click': {
         this.colorIndex = (this.colorIndex + 1) % COLORS.length;
-        this.setColor(lightState, COLORS[this.colorIndex]);
+        this.setCommand(COLORS[this.colorIndex]);
         break;
       }
       case 'arrow_left_hold': {
         this.colorIndex = 0;
-        this.setColor(lightState, COLORS[this.colorIndex]);
+        this.setCommand(COLORS[this.colorIndex]);
         break;
       }
     }
-    log.debug(lightState, `updating light record ${this.lightRecord.name}`);
-    this.lightRecord.set(assign({}, lightState, { from: 'control' }));
   }
 
-  setColor(lightState: any, color: any) {
-    /* when color_temp is present, the controller ignores color,
-     * therefore remove all color related properties before setting
-     * a new color */
-    delete lightState.color;
-    delete lightState.color_temp;
-    delete lightState.color_temp_percent;
-    return assign(lightState, color);
+  setCommand(command: any) {
+    log.debug(command, `updating light record ${this.lightRecord.name}`);
+    this.lightRecord.set(assign({}, command, { from: 'control' }));
   }
 }

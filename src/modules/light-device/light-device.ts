@@ -8,6 +8,7 @@ import { assign } from 'lodash';
 const log = logging.getLogger('LightDevice');
 
 const RESEND_TIMEOUT = 2000; /* retry commands after 2 seconds */
+const MAX_RESENDS = 10;
 
 export interface LightDeviceConfig {
   mqttUrl: string;
@@ -21,6 +22,7 @@ export class LightDevice extends Service {
   private lightRecord: Record;
   private lightSetTopic: string;
   private resendTimer: any;
+  private resendCounter: number;
 
   constructor(private ds: IwDeepstreamClient) {
     super('tradfri-remote');
@@ -45,7 +47,7 @@ export class LightDevice extends Service {
     });
     this.lightRecord = this.ds.getRecord(config.lightRecord);
     await this.lightRecord.whenReady();
-    this.lightRecord.subscribe(undefined, this.setLight.bind(this), true);
+    this.lightRecord.subscribe(undefined, this.handleCommand.bind(this), true);
     this.setState(State.OK);
   }
 
@@ -65,6 +67,11 @@ export class LightDevice extends Service {
     }
     log.debug(message, `updating light record ${this.lightRecord.name}`);
     this.lightRecord.set(assign({}, message, { from: 'device' }));
+  }
+
+  private handleCommand(command: any) {
+    this.resendCounter = 0;
+    this.setLight(command);
   }
 
   private setLight(lightState: any) {
@@ -93,7 +100,13 @@ export class LightDevice extends Service {
       /* latest update is from device, so command was acknowledged */
       return;
     }
-    log.warn('resending command...');
-    this.setLight(lightState);
+    this.resendCounter += 1;
+    if (this.resendCounter > MAX_RESENDS) {
+      log.error(`unable to send command after ${MAX_RESENDS} retries. Giving up.`);
+      return;
+    } else {
+      log.warn(`resending command (retry ${this.resendCounter})...`);
+      this.setLight(lightState);
+    }
   }
 }
