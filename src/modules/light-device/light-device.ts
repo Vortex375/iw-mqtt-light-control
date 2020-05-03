@@ -25,7 +25,7 @@ export class LightDevice extends Service {
   private resendCounter: number;
 
   constructor(private ds: IwDeepstreamClient) {
-    super('tradfri-remote');
+    super('light-device');
   }
 
   async start(config: LightDeviceConfig) {
@@ -67,6 +67,7 @@ export class LightDevice extends Service {
     }
     log.debug(message, `updating light record ${this.lightRecord.name}`);
     this.lightRecord.set(assign({}, message, { from: 'device' }));
+    this.setState(State.OK);
   }
 
   private handleCommand(command: any) {
@@ -79,6 +80,7 @@ export class LightDevice extends Service {
       /* avoid feedback loop */
       return;
     }
+    this.setState(State.BUSY, 'sending device command');
     log.debug(lightState, `publishing to ${this.lightSetTopic}`);
     /* if state is 'OFF' we must omit the other settings or the controller
      * turns the light immediately back on */
@@ -103,9 +105,11 @@ export class LightDevice extends Service {
     this.resendCounter += 1;
     if (this.resendCounter > MAX_RESENDS) {
       log.error(`unable to send command after ${MAX_RESENDS} retries. Giving up.`);
+      this.setState(State.PROBLEM, 'unable to communicate with device');
       return;
     } else {
       log.warn(`resending command (retry ${this.resendCounter})...`);
+      this.setState(State.BUSY, `resending command (retry ${this.resendCounter})`);
       this.setLight(lightState);
     }
   }
