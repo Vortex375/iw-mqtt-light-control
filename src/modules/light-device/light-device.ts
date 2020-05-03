@@ -109,8 +109,8 @@ export class LightDevice extends Service {
       return;
     } else {
       log.warn(`resending command (retry ${this.resendCounter})...`);
-      this.setState(State.BUSY, `resending command (retry ${this.resendCounter})`);
       this.setLight(lightState);
+      this.setState(State.BUSY, `resending command (retry ${this.resendCounter})`);
     }
   }
 }
