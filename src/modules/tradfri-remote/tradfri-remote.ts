@@ -139,6 +139,12 @@ export class TradfriRemote extends Service {
 
   setCommand(command: any) {
     log.debug(command, `updating light record ${this.lightRecord.name}`);
-    this.lightRecord.set(assign({ transition: 0.2 }, command, { from: 'control' }));
+    let transition = 0.2;
+    if (command.brightness !== undefined && command.brightness <= 32) {
+      /* for whatever reason, specifying "transition" with small brightness values
+       * causes the light to turn off */
+      transition = 0;
+    }
+    this.lightRecord.set(assign({ transition }, command, { from: 'control' }));
   }
 }
