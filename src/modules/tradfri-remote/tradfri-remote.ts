@@ -134,6 +134,6 @@ export class TradfriRemote extends Service {
 
   setCommand(command: any) {
     log.debug(command, `updating light record ${this.lightRecord.name}`);
-    this.lightRecord.set(assign({}, command, { from: 'control' }));
+    this.lightRecord.set(assign({ transition: 0.2 }, command, { from: 'control' }));
   }
 }
