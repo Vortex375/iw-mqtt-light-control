@@ -29,6 +29,7 @@ export class LightDevice extends Service {
   }
 
   async start(config: LightDeviceConfig) {
+    this.setServiceName(config.mqttDeviceName);
     this.setState(State.BUSY);
     await new Promise((resolve, reject) => {
       const lightTopic = `zigbee2mqtt/${config.mqttDeviceName}`;

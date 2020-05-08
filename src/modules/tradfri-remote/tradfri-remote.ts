@@ -11,8 +11,7 @@ const COLORS = [
   { color_temp_percent: 0 },
   { color: { r: 255, g: 147, b:  41 } }, /* candle */
   { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
-  { color: { r: 255, g: 244, b: 229 } }, /* warm white */
-  { color: { r: 255, g: 255, b: 251 } }, /* high noon sun */
+  { color: { r: 255, g: 134, b:  41 } }, /* candle 3 */
   { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
   { color: { r: 255, g: 216, b:  77 } }, /* lemon */
   { color: { r:  97, g: 255, b: 121 } }, /* gloom */
@@ -40,6 +39,7 @@ export class TradfriRemote extends Service {
   }
 
   async start(config: TradfriRemoteConfig) {
+    this.setServiceName(config.mqttDeviceName);
     this.setState(State.BUSY);
     await new Promise((resolve, reject) => {
       const remoteTopic = `zigbee2mqtt/${config.mqttDeviceName}`;
