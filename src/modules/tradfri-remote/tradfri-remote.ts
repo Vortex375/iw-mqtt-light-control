@@ -50,8 +50,13 @@ export class TradfriRemote extends Service {
       });
       this.client.on('message', (topic, payload) => {
         if (topic === remoteTopic) {
-          const payloadJSON = JSON.parse(payload.toString('utf8'));
-          this.handleMessage(payloadJSON);
+          const payloadString = payload.toString('utf8');
+          try {
+            const payloadJSON = JSON.parse(payloadString);
+            this.handleMessage(payloadJSON);
+          } catch (err) {
+            log.error({ err, message: payloadString }, 'unable to parse device message');
+          }
         }
       });
     });
