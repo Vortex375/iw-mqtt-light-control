@@ -11,7 +11,6 @@ const COLORS = [
   { color_temp_percent: 0 },
   { color: { r: 255, g: 147, b:  41 } }, /* candle */
   { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
-  { color: { r: 255, g: 134, b:  41 } }, /* candle 3 */
   { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
   { color: { r: 255, g: 216, b:  77 } }, /* lemon */
   { color: { r:  97, g: 255, b: 121 } }, /* gloom */
@@ -106,7 +105,7 @@ export class TradfriRemote extends Service {
         } else {
           brightness = 255;
         }
-        this.setCommand({ brightness });
+        this.setCommand({ transition: 0.2, brightness });
         break;
       }
       case 'brightness_down_hold': {
@@ -116,7 +115,7 @@ export class TradfriRemote extends Service {
         } else {
           brightness = 5;
         }
-        this.setCommand({ brightness });
+        this.setCommand({ transition: 0.2, brightness });
         break;
       }
       case 'arrow_left_click': {
@@ -139,12 +138,11 @@ export class TradfriRemote extends Service {
 
   setCommand(command: any) {
     log.debug(command, `updating light record ${this.lightRecord.name}`);
-    let transition = 0.2;
-    if (command.brightness !== undefined && command.brightness <= 32) {
+    if (command.transition !== undefined && command.brightness !== undefined && command.brightness <= 32) {
       /* for whatever reason, specifying "transition" with small brightness values
        * causes the light to turn off */
-      transition = 0;
+      command.transition = 0;
     }
-    this.lightRecord.set(assign({ transition }, command, { from: 'control' }));
+    this.lightRecord.set(assign({}, command, { from: 'control' }));
   }
 }
