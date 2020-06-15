@@ -97,35 +97,41 @@ export class TradfriRemote extends Service {
       case 'toggle': {
         let command: any;
         if (this.isState(lightState, lightDevice.onState)) {
+          log.debug('device is on, turning off');
           command = assign({}, lightState, lightDevice.offState);
         } else {
+          log.debug('device is off, turning on');
           command = assign({}, lightState, lightDevice.onState);
         }
         this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_up_click': {
-        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
-        brightness = Math.min(lightDevice.brightnessConfig.steps, brightness + (lightDevice.brightnessConfig.steps / 10));
-        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness });
+        const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        const brightnessNew = Math.min(lightDevice.brightnessConfig.steps, brightnessOld + (lightDevice.brightnessConfig.steps / 10));
+        log.debug({ brightnessOld, brightnessNew }, 'brightness step up');
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.onState);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_down_click': {
-        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
-        brightness = Math.max(0, brightness - (lightDevice.brightnessConfig.steps / 10));
-        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness });
+        const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        const brightnessNew = Math.max(0, brightnessOld - (lightDevice.brightnessConfig.steps / 10));
+        log.debug({ brightnessOld, brightnessNew }, 'brightness step down');
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.onState);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_up_hold': {
-        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
-        if (brightness < lightDevice.brightnessConfig.steps / 3) {
-          brightness = lightDevice.brightnessConfig.steps / 3;
+        const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        let brightnessNew: number;
+        if (brightnessOld < lightDevice.brightnessConfig.steps / 3) {
+          brightnessNew = lightDevice.brightnessConfig.steps / 3;
         } else {
-          brightness = lightDevice.brightnessConfig.steps;
+          brightnessNew = lightDevice.brightnessConfig.steps;
         }
-        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness }, lightDevice.transitionState);
+        log.debug({ brightnessOld, brightnessNew }, 'brightness leap up');
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.onState, lightDevice.transitionState);
         this.setCommand(lightDevice, command);
         break;
       }
@@ -137,30 +143,35 @@ export class TradfriRemote extends Service {
         //   brightness = 5;
         // }
         // this.setCommand({ transition: 0.2, brightness });
-        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
-        if (brightness > lightDevice.brightnessConfig.steps / 3) {
-          brightness = lightDevice.brightnessConfig.steps / 3;
+        const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        let brightnessNew: number;
+        if (brightnessNew > lightDevice.brightnessConfig.steps / 3) {
+          brightnessNew = lightDevice.brightnessConfig.steps / 3;
         } else {
-          brightness = lightDevice.brightnessConfig.steps * 0.02;
+          brightnessNew = lightDevice.brightnessConfig.steps * 0.02;
         }
-        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness }, lightDevice.transitionState);
+        log.debug({ brightnessOld, brightnessNew }, 'brightness leap down');
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.onState, lightDevice.transitionState);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex - 1 + lightDevice.templates.length) % lightDevice.templates.length;
+        log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template left');
         const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_right_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex + 1) % lightDevice.templates.length;
+        log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template right');
         const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_hold': {
         lightDevice.templateIndex = 0;
+        log.debug({ templateIndex: lightDevice.templateIndex }, 'reset template');
         const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
