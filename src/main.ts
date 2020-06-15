@@ -58,16 +58,16 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
         fade: false
       },
       templates: [
-        { value: { r: 255, g: 134, b: 41, w: 0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 */
-        { value: { r: 255, g: 134, b: 41, w: 50 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
-        { value: { r: 255, g: 134, b: 41, w: 255 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 147, b:  41 } }, /* candle */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 117, b: 107 } }, /* aprikose */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 216, b:  77 } }, /* lemon */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r:  97, g: 255, b: 121 } }, /* gloom */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 108, g: 148, b: 122 } }, /* green/gray */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
+        { value: { r: 255, g: 134, b:  41, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 */
+        { value: { r: 255, g: 134, b:  41, w:  50 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
+        { value: { r: 255, g: 134, b:  41, w: 255 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
+        { value: { r: 255, g: 147, b:  41, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle */
+        { value: { r: 255, g: 117, b: 107, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* aprikose */
+        { value: { r: 255, g: 216, b:  77, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* lemon */
+        { value: { r:  97, g: 255, b: 121, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* gloom */
+        { value: { r: 108, g: 148, b: 122, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* green/gray */
+        { value: { r: 191, g: 102, b: 255, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* flieder */
+        { value: { r:  64, g: 156, b: 255, w:   0 }, correction: { r: 255, g: 224, b: 140 } } /* blue sky */
       ]
     }
   ]
