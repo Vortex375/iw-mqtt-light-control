@@ -145,7 +145,7 @@ export class TradfriRemote extends Service {
         // this.setCommand({ transition: 0.2, brightness });
         const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
         let brightnessNew: number;
-        if (brightnessNew > lightDevice.brightnessConfig.steps / 3) {
+        if (brightnessOld > lightDevice.brightnessConfig.steps / 3) {
           brightnessNew = lightDevice.brightnessConfig.steps / 3;
         } else {
           brightnessNew = lightDevice.brightnessConfig.steps * 0.02;
@@ -174,6 +174,11 @@ export class TradfriRemote extends Service {
         log.debug({ templateIndex: lightDevice.templateIndex }, 'reset template');
         const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
+        break;
+      }
+      case 'arrow_right_hold': {
+        this.deviceIndex = (this.deviceIndex + 1) % this.lightDevices.length;
+        log.debug({ deviceIndex: this.deviceIndex, device: this.lightDevices[this.deviceIndex].recordName }, 'cycle device');
         break;
       }
     }

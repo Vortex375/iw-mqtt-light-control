@@ -26,17 +26,17 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
         transition: 0
       },
       templates: [
-        { color_temp_percent: 100, color: undefined },
-        { color_temp_percent: 50, color: undefined },
-        { color_temp_percent: 0, color: undefined },
-        { color_temp_percent: undefined, color: { r: 255, g: 147, b:  41 } }, /* candle */
-        { color_temp_percent: undefined, color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
-        { color_temp_percent: undefined, color: { r: 255, g: 117, b: 107 } }, /* aprikose */
-        { color_temp_percent: undefined, color: { r: 255, g: 216, b:  77 } }, /* lemon */
-        { color_temp_percent: undefined, color: { r:  97, g: 255, b: 121 } }, /* gloom */
-        { color_temp_percent: undefined, color: { r: 108, g: 148, b: 122 } }, /* green/gray */
-        { color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
-        { color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
+        { color_temp: undefined, color_temp_percent: 100, color: undefined },
+        { color_temp: undefined, color_temp_percent: 50, color: undefined },
+        { color_temp: undefined, color_temp_percent: 0, color: undefined },
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 147, b:  41 } }, /* candle */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 117, b: 107 } }, /* aprikose */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 216, b:  77 } }, /* lemon */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r:  97, g: 255, b: 121 } }, /* gloom */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 108, g: 148, b: 122 } }, /* green/gray */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
       ]
     }
   ]
