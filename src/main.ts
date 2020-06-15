@@ -81,7 +81,8 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
         { value: { r: 191, g: 102, b: 255, w:   0 } }, /* flieder */
         { value: { r:  64, g: 156, b: 255, w:   0 } }, /* blue sky */
         { pattern: 'RAINBOW', size: 120, brightness: 1, saturation: 1, speed: 32, fps: 60 },
-        { pattern: 'LINEAR_GRADIENT', size: 240, from: { r: 255, g: 0, b: 0, w: 0 }, to: { r: 0, g: 255, b: 0, w: 0 }, correction: undefined }
+        { pattern: 'LINEAR_GRADIENT', size: 240, from: { r: 255, g: 0, b: 0, w: 0 }, to: { r: 0, g: 255, b: 0, w: 0 }, correction: undefined },
+        { pattern: 'LINEAR_GRADIENT', size: 240, from: { r: 255, g: 80, b: 21, w: 0 }, to: { r: 255, g: 90, b: 0, w: 0 }, correction: undefined }
       ]
     }
   ]
