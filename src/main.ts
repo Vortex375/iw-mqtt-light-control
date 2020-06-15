@@ -38,6 +38,37 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
         { color_temp: undefined, color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
         { color_temp: undefined, color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
       ]
+    },
+    {
+      recordName: 'light-control/devices/Living Room',
+      brightnessConfig: {
+        prop: 'brightness',
+        steps: 1
+      },
+      onState: {
+        brightness: 1
+      },
+      offState: {
+        brightness: 0
+      },
+      transitionState: {
+        fade: true
+      },
+      noTransitionState: {
+        fade: false
+      },
+      templates: [
+        { value: { r: 255, g: 134, b: 41, w: 0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 */
+        { value: { r: 255, g: 134, b: 41, w: 50 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
+        { value: { r: 255, g: 134, b: 41, w: 255 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 147, b:  41 } }, /* candle */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 117, b: 107 } }, /* aprikose */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 216, b:  77 } }, /* lemon */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r:  97, g: 255, b: 121 } }, /* gloom */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 108, g: 148, b: 122 } }, /* green/gray */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
+        { color_temp: undefined, color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
+      ]
     }
   ]
 };
