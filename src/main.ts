@@ -25,7 +25,7 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         transition: 0
       },
-      nullTemplate: { color_temp: undefined, color_temp_percent: undefined, color: undefined },
+      nullTemplate: { from: 'control', color_temp: undefined, color_temp_percent: undefined, color: undefined },
       templates: [
         { color_temp_percent: 100 },
         { color_temp_percent: 50 },
@@ -58,7 +58,17 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         fade: false
       },
-      nullTemplate: { value: undefined, correction: { r: 255, g: 224, b: 140 }, pattern: undefined, size: undefined, saturation: undefined, speed: undefined, fps: undefined },
+      nullTemplate: {
+        correction: { r: 255, g: 224, b: 140 },
+        value: undefined,
+        from: undefined,
+        to: undefined,
+        pattern: undefined,
+        size: undefined,
+        saturation: undefined,
+        speed: undefined,
+        fps: undefined
+       },
       templates: [
         { value: { r: 255, g: 134, b:  41, w:   0 } }, /* candle 3 */
         { value: { r: 255, g: 134, b:  41, w:  50 } }, /* candle 3 with white */

@@ -191,6 +191,6 @@ export class TradfriRemote extends Service {
        * causes the light to turn off */
       assign(command, lightDevice.noTransitionState);
     }
-    lightDevice.record.set(assign({}, command, { from: 'control' }));
+    lightDevice.record.set(command);
   }
 }
