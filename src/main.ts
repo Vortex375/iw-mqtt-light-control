@@ -25,18 +25,19 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         transition: 0
       },
+      nullTemplate: { color_temp: undefined, color_temp_percent: undefined, color: undefined },
       templates: [
-        { color_temp: undefined, color_temp_percent: 100, color: undefined },
-        { color_temp: undefined, color_temp_percent: 50, color: undefined },
-        { color_temp: undefined, color_temp_percent: 0, color: undefined },
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 147, b:  41 } }, /* candle */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 117, b: 107 } }, /* aprikose */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 255, g: 216, b:  77 } }, /* lemon */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r:  97, g: 255, b: 121 } }, /* gloom */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 108, g: 148, b: 122 } }, /* green/gray */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r: 191, g: 102, b: 255 } }, /* flieder */
-        { color_temp: undefined, color_temp_percent: undefined, color: { r:  64, g: 156, b: 255 } } /* blue sky */
+        { color_temp_percent: 100 },
+        { color_temp_percent: 50 },
+        { color_temp_percent: 0 },
+        { color: { r: 255, g: 147, b:  41 } }, /* candle */
+        { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
+        { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
+        { color: { r: 255, g: 216, b:  77 } }, /* lemon */
+        { color: { r:  97, g: 255, b: 121 } }, /* gloom */
+        { color: { r: 108, g: 148, b: 122 } }, /* green/gray */
+        { color: { r: 191, g: 102, b: 255 } }, /* flieder */
+        { color: { r:  64, g: 156, b: 255 } } /* blue sky */
       ]
     },
     {
@@ -57,17 +58,20 @@ const REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         fade: false
       },
+      nullTemplate: { value: undefined, correction: { r: 255, g: 224, b: 140 }, pattern: undefined, size: undefined, saturation: undefined, speed: undefined, fps: undefined },
       templates: [
-        { value: { r: 255, g: 134, b:  41, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 */
-        { value: { r: 255, g: 134, b:  41, w:  50 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
-        { value: { r: 255, g: 134, b:  41, w: 255 }, correction: { r: 255, g: 224, b: 140 } }, /* candle 3 with white */
-        { value: { r: 255, g: 147, b:  41, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* candle */
-        { value: { r: 255, g: 117, b: 107, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* aprikose */
-        { value: { r: 255, g: 216, b:  77, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* lemon */
-        { value: { r:  97, g: 255, b: 121, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* gloom */
-        { value: { r: 108, g: 148, b: 122, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* green/gray */
-        { value: { r: 191, g: 102, b: 255, w:   0 }, correction: { r: 255, g: 224, b: 140 } }, /* flieder */
-        { value: { r:  64, g: 156, b: 255, w:   0 }, correction: { r: 255, g: 224, b: 140 } } /* blue sky */
+        { value: { r: 255, g: 134, b:  41, w:   0 } }, /* candle 3 */
+        { value: { r: 255, g: 134, b:  41, w:  50 } }, /* candle 3 with white */
+        { value: { r: 255, g: 134, b:  41, w: 255 } }, /* candle 3 with white */
+        { value: { r: 255, g: 147, b:  41, w:   0 } }, /* candle */
+        { value: { r: 255, g: 117, b: 107, w:   0 } }, /* aprikose */
+        { value: { r: 255, g: 216, b:  77, w:   0 } }, /* lemon */
+        { value: { r:  97, g: 255, b: 121, w:   0 } }, /* gloom */
+        { value: { r: 108, g: 148, b: 122, w:   0 } }, /* green/gray */
+        { value: { r: 191, g: 102, b: 255, w:   0 } }, /* flieder */
+        { value: { r:  64, g: 156, b: 255, w:   0 } }, /* blue sky */
+        { pattern: 'RAINBOW', size: 120, brightness: 1, saturation: 1, speed: 32, fps: 60 },
+        { pattern: 'LINEAR_GRADIENT', size: 240, from: { r: 255, g: 0, b: 0, w: 0 }, to: { r: 0, g: 255, b: 0, w: 0 } }
       ]
     }
   ]

@@ -20,6 +20,7 @@ export interface TradfriRemoteConfig {
 export interface LightDeviceConfig {
   recordName: string;
   templates: any[];
+  nullTemplate?: object;
   brightnessConfig: {
     prop: string;
     steps: number;
@@ -151,21 +152,21 @@ export class TradfriRemote extends Service {
       case 'arrow_left_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex - 1 + lightDevice.templates.length) % lightDevice.templates.length;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template left');
-        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_right_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex + 1) % lightDevice.templates.length;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template right');
-        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_hold': {
         lightDevice.templateIndex = 0;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'reset template');
-        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
