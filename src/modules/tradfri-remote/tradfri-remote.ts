@@ -3,20 +3,10 @@ import * as logging from 'iw-base/lib/logging';
 import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
 import { Record } from '@deepstream/client/dist/record/record';
 import * as mqtt from 'mqtt';
-import { assign } from 'lodash';
+import { assign, pick, keys, isEqual } from 'lodash';
 
 const COLORS = [
-  { color_temp_percent: 100 },
-  { color_temp_percent: 50 },
-  { color_temp_percent: 0 },
-  { color: { r: 255, g: 147, b:  41 } }, /* candle */
-  { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
-  { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
-  { color: { r: 255, g: 216, b:  77 } }, /* lemon */
-  { color: { r:  97, g: 255, b: 121 } }, /* gloom */
-  { color: { r: 108, g: 148, b: 122 } }, /* green/gray */
-  { color: { r: 191, g: 102, b: 255 } }, /* flieder */
-  { color: { r:  64, g: 156, b: 255 } } /* blue sky */
+
 ];
 
 const log = logging.getLogger('TradfriRemote');
@@ -24,14 +14,32 @@ const log = logging.getLogger('TradfriRemote');
 export interface TradfriRemoteConfig {
   mqttUrl: string;
   mqttDeviceName: string;
-  lightRecord: string;
+  lightDevices: LightDeviceConfig[];
+}
+
+export interface LightDeviceConfig {
+  recordName: string;
+  templates: any[];
+  brightnessConfig: {
+    prop: string;
+    steps: number;
+  };
+  onState: object;
+  offState: object;
+  transitionState: object;
+  noTransitionState: object;
+}
+
+interface LightDevice extends LightDeviceConfig {
+  templateIndex: number;
+  record: Record;
 }
 
 export class TradfriRemote extends Service {
 
   private client: mqtt.Client;
-  private lightRecord: Record;
-  private colorIndex = 0;
+  private lightDevices: LightDevice[];
+  private deviceIndex = 0;
 
   constructor(private ds: IwDeepstreamClient) {
     super('tradfri-remote');
@@ -59,8 +67,15 @@ export class TradfriRemote extends Service {
         }
       });
     });
-    this.lightRecord = this.ds.getRecord(config.lightRecord);
-    await this.lightRecord.whenReady();
+    this.lightDevices = await Promise.all(config.lightDevices.map(async (deviceConfig) => {
+      const lightDevice: LightDevice = {
+        ...deviceConfig,
+        templateIndex: 0,
+        record: this.ds.getRecord(deviceConfig.recordName)
+      };
+      await lightDevice.record.whenReady();
+      return lightDevice;
+    }));
     this.setState(State.OK);
   }
 
@@ -68,81 +83,104 @@ export class TradfriRemote extends Service {
     await new Promise((resolve, reject) => {
     this.client.end(undefined, undefined, resolve);
     });
-    this.lightRecord.discard();
+    this.lightDevices.forEach((lightDevice) => {
+      lightDevice.record.discard();
+    });
     this.setState(State.INACTIVE);
   }
 
   private handleMessage(message: any) {
-    const lightState = this.lightRecord.get();
+    const lightDevice = this.lightDevices[this.deviceIndex];
+    const lightState = lightDevice.record.get();
     log.debug(message, `received action ${message.action}`);
     switch (message.action) {
       case 'toggle': {
-        let state = lightState.state ?? 'OFF';
-        if (state === 'ON') {
-          state = 'OFF';
+        let command: any;
+        if (this.isState(lightState, lightDevice.onState)) {
+          command = assign({}, lightState, lightDevice.offState);
         } else {
-          state = 'ON';
+          command = assign({}, lightState, lightDevice.onState);
         }
-        this.setCommand({ state });
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_up_click': {
-        let brightness = lightState.brightness ?? 255;
-        brightness = Math.min(255, brightness + 25);
-        this.setCommand({ brightness });
+        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        brightness = Math.min(lightDevice.brightnessConfig.steps, brightness + (lightDevice.brightnessConfig.steps / 10));
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness });
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_down_click': {
-        let brightness = lightState.brightness ?? 255;
-        brightness = Math.max(5, brightness - 25);
-        this.setCommand({ brightness });
+        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        brightness = Math.max(0, brightness - (lightDevice.brightnessConfig.steps / 10));
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness });
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_up_hold': {
-        let brightness = lightState.brightness ?? 255;
-        if (brightness < 80) {
-          brightness = 80;
+        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        if (brightness < lightDevice.brightnessConfig.steps / 3) {
+          brightness = lightDevice.brightnessConfig.steps / 3;
         } else {
-          brightness = 255;
+          brightness = lightDevice.brightnessConfig.steps;
         }
-        this.setCommand({ transition: 0.2, brightness });
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness }, lightDevice.transitionState);
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'brightness_down_hold': {
-        let brightness = lightState.brightness ?? 255;
-        if (brightness > 80) {
-          brightness = 80;
+        // let brightness = lightState.brightness ?? 255;
+        // if (brightness > 80) {
+        //   brightness = 80;
+        // } else {
+        //   brightness = 5;
+        // }
+        // this.setCommand({ transition: 0.2, brightness });
+        let brightness = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
+        if (brightness > lightDevice.brightnessConfig.steps / 3) {
+          brightness = lightDevice.brightnessConfig.steps / 3;
         } else {
-          brightness = 5;
+          brightness = lightDevice.brightnessConfig.steps * 0.02;
         }
-        this.setCommand({ transition: 0.2, brightness });
+        const command = assign({}, lightState, { [lightDevice.brightnessConfig.prop]: brightness }, lightDevice.transitionState);
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_click': {
-        this.colorIndex = (this.colorIndex - 1 + COLORS.length) % COLORS.length;
-        this.setCommand(COLORS[this.colorIndex]);
+        lightDevice.templateIndex = (lightDevice.templateIndex - 1 + lightDevice.templates.length) % lightDevice.templates.length;
+        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_right_click': {
-        this.colorIndex = (this.colorIndex + 1) % COLORS.length;
-        this.setCommand(COLORS[this.colorIndex]);
+        lightDevice.templateIndex = (lightDevice.templateIndex + 1) % lightDevice.templates.length;
+        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_hold': {
-        this.colorIndex = 0;
-        this.setCommand(COLORS[this.colorIndex]);
+        lightDevice.templateIndex = 0;
+        const command = assign({}, lightState, lightDevice.templates[lightDevice.templateIndex]);
+        this.setCommand(lightDevice, command);
         break;
       }
     }
   }
 
-  setCommand(command: any) {
-    log.debug(command, `updating light record ${this.lightRecord.name}`);
-    if (command.transition !== undefined && command.brightness !== undefined && command.brightness <= 32) {
+  private isState(lightState: object, stateObj: object) {
+    return isEqual(pick(lightState, keys(stateObj)), stateObj);
+  }
+
+  setCommand(lightDevice: LightDevice, command: any) {
+    log.debug(command, `updating light record ${lightDevice.recordName}`);
+    const isLowBrightness = command[lightDevice.brightnessConfig.prop] !== undefined
+                            && command[lightDevice.brightnessConfig.prop] < lightDevice.brightnessConfig.steps * 0.2;
+    if (isLowBrightness && this.isState(command, lightDevice.transitionState)) {
       /* for whatever reason, specifying "transition" with small brightness values
        * causes the light to turn off */
-      command.transition = 0;
+      assign(command, lightDevice.noTransitionState);
     }
-    this.lightRecord.set(assign({}, command, { from: 'control' }));
+    lightDevice.record.set(assign({}, command, { from: 'control' }));
   }
 }
