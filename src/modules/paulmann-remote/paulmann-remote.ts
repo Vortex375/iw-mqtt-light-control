@@ -38,6 +38,7 @@ export class PaulmannRemote extends Service {
   private client: mqtt.Client;
   private lightDevices: LightDevice[];
   private brightnessMoveTimer: NodeJS.Timeout;
+  private moveCancelTimer: NodeJS.Timeout;
   private modeSwitchCount = 0;
 
   constructor(private ds: IwDeepstreamClient) {
@@ -108,34 +109,29 @@ export class PaulmannRemote extends Service {
         break;
       }
       case 'brightness_move_up': {
-        if (this.brightnessMoveTimer) {
-          clearInterval(this.brightnessMoveTimer);
-        }
+        this.cancelMove();
         const moveBrightness = () => {
           const command = lightDevice.incrementBrightness(lightState);
           this.setCommand(lightDevice, command);
         };
         moveBrightness();
         this.brightnessMoveTimer = setInterval(moveBrightness, 500);
+        this.moveCancelTimer = setTimeout(() => this.cancelMove(), 10000);
         break;
       }
       case 'brightness_move_down': {
-        if (this.brightnessMoveTimer) {
-          clearInterval(this.brightnessMoveTimer);
-        }
+        this.cancelMove();
         const moveBrightness = () => {
           const command = lightDevice.decrementBrightness(lightState);
           this.setCommand(lightDevice, command);
         };
         moveBrightness();
         this.brightnessMoveTimer = setInterval(moveBrightness, 500);
+        this.moveCancelTimer = setTimeout(() => this.cancelMove(), 10000);
         break;
       }
       case 'brightness_stop': {
-        if (this.brightnessMoveTimer) {
-          clearInterval(this.brightnessMoveTimer);
-          this.brightnessMoveTimer = undefined;
-        }
+        this.cancelMove();
         break;
       }
       case 'color_temperature_move': {
@@ -173,5 +169,16 @@ export class PaulmannRemote extends Service {
   setCommand(lightDevice: LightDevice, command: any) {
     log.debug(command, `updating light record ${lightDevice.recordName}`);
     lightDevice.record.set(command);
+  }
+
+  private cancelMove() {
+    if (this.brightnessMoveTimer) {
+      clearInterval(this.brightnessMoveTimer);
+      this.brightnessMoveTimer = undefined;
+    }
+    if (this.moveCancelTimer) {
+      clearTimeout(this.moveCancelTimer);
+      this.moveCancelTimer = undefined;
+    }
   }
 }
