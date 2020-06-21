@@ -5,10 +5,6 @@ import { Record } from '@deepstream/client/dist/record/record';
 import * as mqtt from 'mqtt';
 import { assign, pick, keys, isEqual } from 'lodash';
 
-const COLORS = [
-
-];
-
 const log = logging.getLogger('TradfriRemote');
 
 export interface TradfriRemoteConfig {
