@@ -116,7 +116,7 @@ export class PaulmannRemote extends Service {
           this.setCommand(lightDevice, command);
         };
         moveBrightness();
-        this.brightnessMoveTimer = setInterval(moveBrightness, 500);
+        this.brightnessMoveTimer = setInterval(moveBrightness, 250);
         this.moveCancelTimer = setTimeout(() => this.cancelMove(), 10000);
         break;
       }
@@ -127,7 +127,7 @@ export class PaulmannRemote extends Service {
           this.setCommand(lightDevice, command);
         };
         moveBrightness();
-        this.brightnessMoveTimer = setInterval(moveBrightness, 500);
+        this.brightnessMoveTimer = setInterval(moveBrightness, 250);
         this.moveCancelTimer = setTimeout(() => this.cancelMove(), 10000);
         break;
       }
