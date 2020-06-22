@@ -3,6 +3,7 @@ import * as logging from 'iw-base/lib/logging';
 import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
 import { Record } from '@deepstream/client/dist/record/record';
 import * as mqtt from 'mqtt';
+import { assign } from 'lodash';
 
 const log = logging.getLogger('PaulmannRemote');
 
@@ -168,7 +169,7 @@ export class PaulmannRemote extends Service {
 
   setCommand(lightDevice: LightDevice, command: any) {
     log.debug(command, `updating light record ${lightDevice.recordName}`);
-    lightDevice.record.set(command);
+    lightDevice.record.set(assign({}, command));
   }
 
   private cancelMove() {

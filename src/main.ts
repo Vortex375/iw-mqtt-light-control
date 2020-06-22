@@ -112,7 +112,7 @@ const PAULMANN_REMOTE_CONFIG: PaulmannRemoteConfig = {
         if (state.brightness === undefined) {
           state.brightness = 255;
         } else {
-          state.brightness += 40;
+          state.brightness += 20;
         }
         state.brightness = clamp(state.brightness, 0, 255);
         if (state.brightness > 50) {
@@ -125,7 +125,7 @@ const PAULMANN_REMOTE_CONFIG: PaulmannRemoteConfig = {
         if (state.brightness === undefined) {
           state.brightness = 255;
         } else {
-          state.brightness -= 40;
+          state.brightness -= 20;
         }
         state.brightness = clamp(state.brightness, 0, 255);
         if (state.brightness > 50) {
@@ -182,7 +182,7 @@ const PAULMANN_REMOTE_CONFIG: PaulmannRemoteConfig = {
         if (state.brightness === undefined) {
           state.brightness = 1;
         } else {
-          state.brightness += 0.15;
+          state.brightness += 0.05;
         }
         state.brightness = clamp(state.brightness, 0, 1);
         state.fade = false;
@@ -192,7 +192,7 @@ const PAULMANN_REMOTE_CONFIG: PaulmannRemoteConfig = {
         if (state.brightness === undefined) {
           state.brightness = 1;
         } else {
-          state.brightness -= 0.15;
+          state.brightness -= 0.05;
         }
         state.brightness = clamp(state.brightness, 0, 1);
         state.fade = false;
