@@ -36,12 +36,11 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
         { color: { r: 255, g: 147, b:  41 } }, /* candle */
         { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
         { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
-        { color: { h:  42, s: 100, v: 100 } }, /* orange */
-        { color: { h:  52, s: 100, v: 100 } }, /* yellow */
-        { color: { r: 255, g: 216, b:  77 } }, /* lemon */
+        { color: { h:  42, s: 100 } },         /* orange */
+        { color: { h:  52, s: 100 } },         /* yellow */
         { color: { r:  97, g: 255, b: 121 } }, /* gloom */
         { color: { r: 191, g: 102, b: 255 } }, /* flieder */
-        { color: { h: 220, s:  18, v: 100 } } /* blue sky */
+        { color: { h: 220, s:  18 } }          /* blue sky */
       ]
     },
     {
