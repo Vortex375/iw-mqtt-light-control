@@ -44,7 +44,7 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
       ]
     },
     {
-      recordName: 'light-control/devices/Living Room/set',
+      recordName: 'light-control/devices/Living Room',
       brightnessConfig: {
         prop: 'brightness',
         steps: 1
