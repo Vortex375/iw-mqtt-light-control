@@ -13,13 +13,14 @@ const MAX_RESENDS = 10;
 export interface LightDeviceConfig {
   mqttUrl: string;
   mqttDeviceName: string;
-  lightRecord: string;
+  recordName: string;
 }
 
 export class LightDevice extends Service {
 
   private client: mqtt.Client;
-  private lightRecord: Record;
+  private lightIsRecord: Record;
+  private lightSetRecord: Record;
   private lightSetTopic: string;
   private resendTimer: any;
   private resendCounter: number;
@@ -51,17 +52,19 @@ export class LightDevice extends Service {
         }
       });
     });
-    this.lightRecord = this.ds.getRecord(config.lightRecord);
-    await this.lightRecord.whenReady();
-    this.lightRecord.subscribe(undefined, this.handleCommand.bind(this), true);
+    this.lightIsRecord = this.ds.getRecord(`${config.recordName}/is`);
+    this.lightSetRecord = this.ds.getRecord(`${config.recordName}/set`);
+    await this.lightSetRecord.whenReady();
+    this.lightSetRecord.subscribe(undefined, this.handleCommand.bind(this), true);
     this.setState(State.OK);
   }
 
   async stop() {
     await new Promise((resolve, reject) => {
-    this.client.end(undefined, undefined, resolve);
+      this.client.end(undefined, undefined, resolve);
     });
-    this.lightRecord.discard();
+    this.lightIsRecord.discard();
+    this.lightSetRecord.discard();
     this.setState(State.INACTIVE);
   }
 
@@ -71,8 +74,8 @@ export class LightDevice extends Service {
       clearTimeout(this.resendTimer);
       this.resendTimer = undefined;
     }
-    log.debug(message, `updating light record from device ${this.lightRecord.name}`);
-    this.lightRecord.set(assign({}, message, { from: 'device' }));
+    log.debug(message, `updating light record from device ${this.lightIsRecord.name}`);
+    this.lightIsRecord.set(assign({}, message));
     this.setState(State.OK);
   }
 
@@ -103,11 +106,7 @@ export class LightDevice extends Service {
   }
 
   private resendCommand() {
-    const lightState = this.lightRecord.get();
-    if (lightState.from === 'device') {
-      /* latest update is from device, so command was acknowledged */
-      return;
-    }
+    const lightState = this.lightSetRecord.get();
     this.resendCounter += 1;
     if (this.resendCounter > MAX_RESENDS) {
       log.error(`unable to send command after ${MAX_RESENDS} retries. Giving up.`);

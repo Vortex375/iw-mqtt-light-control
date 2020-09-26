@@ -11,7 +11,7 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
   mqttUrl: 'mqtt://helios4.local',
   lightDevices: [
     {
-      recordName: 'light-control/devices/TV Light',
+      recordName: 'light-control/devices/TV Light/set',
       brightnessConfig: {
         prop: 'brightness',
         steps: 255
@@ -28,7 +28,6 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         transition: 0
       },
-      commandTemplate: { from: 'control' },
       resetTemplate: { color_temp: undefined, color_temp_percent: undefined, color: undefined },
       templates: [
         { color_temp_percent: 100 },
@@ -37,16 +36,16 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
         { color: { r: 255, g: 147, b:  41 } }, /* candle */
         { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
         { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
+        { color: { h:  42, s: 100, v: 100 } }, /* orange */
         { color: { h:  52, s: 100, v: 100 } }, /* yellow */
         { color: { r: 255, g: 216, b:  77 } }, /* lemon */
         { color: { r:  97, g: 255, b: 121 } }, /* gloom */
-        { color: { r: 108, g: 148, b: 122 } }, /* green/gray */
         { color: { r: 191, g: 102, b: 255 } }, /* flieder */
-        { color: { r:  64, g: 156, b: 255 } } /* blue sky */
+        { color: { h: 220, s:  18, v: 100 } } /* blue sky */
       ]
     },
     {
-      recordName: 'light-control/devices/Living Room',
+      recordName: 'light-control/devices/Living Room/set',
       brightnessConfig: {
         prop: 'brightness',
         steps: 1
@@ -271,7 +270,7 @@ const PAULMANN_REMOTE_CONFIG: PaulmannRemoteConfig = {
 };
 
 const LIGHT_CONFIG: LightDeviceConfig = {
-  lightRecord: 'light-control/devices/TV Light',
+  recordName: 'light-control/devices/TV Light',
   mqttDeviceName: 'TV Light',
   mqttUrl: 'mqtt://helios4.local'
 };
