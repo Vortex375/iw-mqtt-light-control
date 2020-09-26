@@ -16,7 +16,8 @@ export interface TradfriRemoteConfig {
 export interface LightDeviceConfig {
   recordName: string;
   templates: any[];
-  nullTemplate?: object;
+  commandTemplate?: object;
+  resetTemplate?: object;
   brightnessConfig: {
     prop: string;
     steps: number;
@@ -95,10 +96,10 @@ export class TradfriRemote extends Service {
         let command: any;
         if (this.isState(lightState, lightDevice.onState)) {
           log.debug('device is on, turning off');
-          command = assign({}, lightState, lightDevice.offState);
+          command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.offState);
         } else {
           log.debug('device is off, turning on');
-          command = assign({}, lightState, lightDevice.onState);
+          command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.onState);
         }
         this.setCommand(lightDevice, command);
         break;
@@ -107,7 +108,7 @@ export class TradfriRemote extends Service {
         const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
         const brightnessNew = Math.min(lightDevice.brightnessConfig.steps, brightnessOld + (lightDevice.brightnessConfig.steps / 10));
         log.debug({ brightnessOld, brightnessNew }, 'brightness step up');
-        const command = assign({}, lightState, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew });
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew });
         this.setCommand(lightDevice, command);
         break;
       }
@@ -115,7 +116,7 @@ export class TradfriRemote extends Service {
         const brightnessOld = lightState[lightDevice.brightnessConfig.prop] ?? lightDevice.brightnessConfig.steps;
         const brightnessNew = Math.max(0, brightnessOld - (lightDevice.brightnessConfig.steps / 10));
         log.debug({ brightnessOld, brightnessNew }, 'brightness step down');
-        const command = assign({}, lightState, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew });
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew });
         this.setCommand(lightDevice, command);
         break;
       }
@@ -128,7 +129,8 @@ export class TradfriRemote extends Service {
           brightnessNew = lightDevice.brightnessConfig.steps;
         }
         log.debug({ brightnessOld, brightnessNew }, 'brightness leap up');
-        const command = assign({}, lightState, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.transitionState);
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.onState,
+            { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.transitionState);
         this.setCommand(lightDevice, command);
         break;
       }
@@ -141,28 +143,29 @@ export class TradfriRemote extends Service {
           brightnessNew = lightDevice.brightnessConfig.steps * 0.02;
         }
         log.debug({ brightnessOld, brightnessNew }, 'brightness leap down');
-        const command = assign({}, lightState, lightDevice.onState, { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.transitionState);
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.onState,
+            { [lightDevice.brightnessConfig.prop]: brightnessNew }, lightDevice.transitionState);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex - 1 + lightDevice.templates.length) % lightDevice.templates.length;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template left');
-        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.resetTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_right_click': {
         lightDevice.templateIndex = (lightDevice.templateIndex + 1) % lightDevice.templates.length;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'cycle template right');
-        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.resetTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }
       case 'arrow_left_hold': {
         lightDevice.templateIndex = 0;
         log.debug({ templateIndex: lightDevice.templateIndex }, 'reset template');
-        const command = assign({}, lightState, lightDevice.nullTemplate, lightDevice.templates[lightDevice.templateIndex]);
+        const command = assign({}, lightState, lightDevice.commandTemplate, lightDevice.resetTemplate, lightDevice.templates[lightDevice.templateIndex]);
         this.setCommand(lightDevice, command);
         break;
       }

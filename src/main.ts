@@ -28,7 +28,8 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         transition: 0
       },
-      nullTemplate: { from: 'control', color_temp: undefined, color_temp_percent: undefined, color: undefined },
+      commandTemplate: { from: 'control' },
+      resetTemplate: { color_temp: undefined, color_temp_percent: undefined, color: undefined },
       templates: [
         { color_temp_percent: 100 },
         { color_temp_percent: 50 },
@@ -36,6 +37,7 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
         { color: { r: 255, g: 147, b:  41 } }, /* candle */
         { color: { r: 255, g: 179, b: 102 } }, /* candle 2 */
         { color: { r: 255, g: 117, b: 107 } }, /* aprikose */
+        { color: { h:  52, s: 100, v: 100 } }, /* yellow */
         { color: { r: 255, g: 216, b:  77 } }, /* lemon */
         { color: { r:  97, g: 255, b: 121 } }, /* gloom */
         { color: { r: 108, g: 148, b: 122 } }, /* green/gray */
@@ -61,7 +63,7 @@ const TRADFRI_REMOTE_CONFIG: TradfriRemoteConfig = {
       noTransitionState: {
         fade: false
       },
-      nullTemplate: {
+      resetTemplate: {
         correction: { r: 255, g: 224, b: 140 },
         value: undefined,
         from: undefined,

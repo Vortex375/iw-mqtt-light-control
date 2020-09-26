@@ -71,7 +71,7 @@ export class LightDevice extends Service {
       clearTimeout(this.resendTimer);
       this.resendTimer = undefined;
     }
-    log.debug(message, `updating light record ${this.lightRecord.name}`);
+    log.debug(message, `updating light record from device ${this.lightRecord.name}`);
     this.lightRecord.set(assign({}, message, { from: 'device' }));
     this.setState(State.OK);
   }
