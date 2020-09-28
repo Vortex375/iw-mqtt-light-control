@@ -1,7 +1,7 @@
 import { Service, State } from 'iw-base/lib/registry';
 import * as logging from 'iw-base/lib/logging';
 import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
-import { Record } from '@deepstream/client/dist/record/record';
+import { Record } from '@deepstream/client/dist/src/record/record';
 import * as mqtt from 'mqtt';
 import { assign, pick, keys, isEqual } from 'lodash';
 

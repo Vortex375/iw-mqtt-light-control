@@ -16,15 +16,15 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
-    "@deepstream/client": "^5.0.8",
-    "@deepstream/types": "^2.1.0",
+    "@deepstream/client": "^5.1.10",
+    "@deepstream/types": "^2.2.0",
     "iw-base": "^0.0.1",
     "lodash": "^4.17.15",
     "mqtt": "^3.0.0",
     "onecolor": "^3.1.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.150",
+    "@types/lodash": "^4.14.161",
     "rimraf": "^3.0.2"
   }
 }
