@@ -1,6 +1,7 @@
 import { Service, State } from 'iw-base/lib/registry';
 import * as logging from 'iw-base/lib/logging';
 import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
+import { Component, ConstructorParameters, Scoped } from 'iw-ioc';
 import { Record } from '@deepstream/client/dist/src/record/record';
 import * as mqtt from 'mqtt';
 import { assign, pick, keys, isEqual } from 'lodash';
@@ -32,6 +33,9 @@ interface LightDevice extends LightDeviceConfig {
   record: Record;
 }
 
+@Component('tradfri-remote')
+@Scoped()
+@ConstructorParameters([IwDeepstreamClient])
 export class TradfriRemote extends Service {
 
   private client: mqtt.Client;
@@ -78,7 +82,7 @@ export class TradfriRemote extends Service {
 
   async stop() {
     await new Promise((resolve, reject) => {
-    this.client.end(undefined, undefined, resolve);
+      this.client.end(undefined, undefined, resolve);
     });
     this.lightDevices.forEach((lightDevice) => {
       lightDevice.record.discard();
