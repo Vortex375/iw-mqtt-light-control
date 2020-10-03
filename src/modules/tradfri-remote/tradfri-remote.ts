@@ -4,7 +4,7 @@ import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
 import { Component, ConstructorParameters, Scoped } from 'iw-ioc';
 import { Record } from '@deepstream/client/dist/src/record/record';
 import * as mqtt from 'mqtt';
-import { assign, pick, keys, isEqual } from 'lodash';
+import { assign, pick, keys, isEqual, forEach } from 'lodash';
 
 const log = logging.getLogger('TradfriRemote');
 
@@ -95,6 +95,15 @@ export class TradfriRemote extends Service {
     const lightState = lightDevice.record.get();
     log.debug(message, `received action ${message.action}`);
     switch (message.action) {
+      case 'toggle_hold': {
+        /* turn all devices off */
+        forEach(this.lightDevices, (device) => {
+          const state = device.record.get();
+          const command = assign({}, state, device.offState);
+          this.setCommand(device, command);
+        });
+        break;
+      }
       case 'toggle': {
         let command: any;
         if (this.isState(lightState, lightDevice.onState)) {
