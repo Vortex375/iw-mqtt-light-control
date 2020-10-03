@@ -4,7 +4,7 @@ import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
 import { Component, ConstructorParameters, Scoped } from 'iw-ioc';
 import { Record } from '@deepstream/client/dist/src/record/record';
 import * as mqtt from 'mqtt';
-import { assign, pick, keys, isEqual, forEach } from 'lodash';
+import { assign, pick, keys, isEqual, forEach, mapValues } from 'lodash';
 
 const log = logging.getLogger('TradfriRemote');
 
@@ -194,6 +194,8 @@ export class TradfriRemote extends Service {
   }
 
   setCommand(lightDevice: LightDevice, command: any) {
+    /* replace null with undefined in the command */
+    command = mapValues(command, (value) => value === null ? undefined : value);
     log.debug(command, `updating light record ${lightDevice.recordName}`);
     const isLowBrightness = command[lightDevice.brightnessConfig.prop] !== undefined
                             && command[lightDevice.brightnessConfig.prop] < lightDevice.brightnessConfig.steps * 0.2;
