@@ -18,11 +18,17 @@ modules:
       mqttDeviceName: TV Light
       mqttUrl: mqtt://helios4.local
 
+  - component: light-device
+    config:
+      recordName: light-control/devices/Tradfri Bulb 1
+      mqttDeviceName: Tradfri Bulb 1
+      mqttUrl: mqtt://helios4.local
+
   - component: tradfri-remote
     config:
       mqttDeviceName: Tradfri Remote 1
       mqttUrl: mqtt://helios4.local
-      lightDevices:
+      lightDevices: &tradfriLightDevices
         - recordName: light-control/devices/TV Light/set
           brightnessConfig:
             prop: "brightness"
@@ -39,18 +45,80 @@ modules:
             color_temp: null
             color_temp_percent: null
             color: null
-          templates:
+          templates: &whiteColorTemplates
             - { color_temp_percent: 100 }
+            # - { color: { r: 255, g: 147, b:  41 } } # candle
+            # - { color: { r: 255, g: 117, b: 107 } } # aprikose
+            # - { color: { r:  97, g: 255, b: 121 } } # gloom
+            # - { color: { r: 191, g: 102, b: 255 } } # flieder
+            # - { color: { h: 220, s:  18 } }         # blue sky
+            - { color: { h:  52, s: 100 } }         # yellow
+            - { color: { h:  42, s: 100 } }         # orange
+            - { color: { r: 231, g: 136, b:  52 } } # X
+            - { color: { r: 229, g: 115, b:  59 } }
+            - { color: { r: 218, g:  93, b:  65 } } # X
+            # - { color: { r: 220, g:  75, b:  49 } }
+            # - { color: { r: 228, g: 145, b: 175 } }
+            # - { color: { r: 232, g: 190, b: 221 } }
+            - { color: { r: 217, g:  51, b: 124 } } # X
+            # - { color: { r: 201, g: 132, b: 187 } } # X
+            - { color: { r: 143, g:  38, b: 134 } }
+            # - { color: { r:  74, g:  65, b: 138 } }
+            - { color: { r: 108, g: 131, b: 186 } } # X
+            - { color: { r: 169, g: 214, b:  43 } }
+            - { color: { r: 214, g: 228, b:  75 } } # last
             - { color_temp_percent: 50 }
             - { color_temp_percent: 0 }
-            - { color: { r: 255, g: 147, b:  41 } } # candle
-            - { color: { r: 255, g: 179, b: 102 } } # candle 2
-            - { color: { r: 255, g: 117, b: 107 } } # aprikose
-            - { color: { h:  42, s: 100 } }         # orange
-            - { color: { h:  52, s: 100 } }         # yellow
-            - { color: { r:  97, g: 255, b: 121 } } # gloom
-            - { color: { r: 191, g: 102, b: 255 } } # flieder
-            - { color: { h: 220, s:  18 } }         # blue sky
+
+
+        - recordName: light-control/devices/Tradfri Bulb 1/set
+          brightnessConfig:
+            prop: "brightness"
+            steps: 255
+          onState:
+            state: "ON"
+          offState:
+            state: "OFF"
+          transitionState:
+            transition: 0.2
+          noTransitionState:
+            transition: 0
+          resetTemplate:
+            color_temp: null
+            color_temp_percent: null
+            color: null
+          templates: &ikeaTemplates
+            - { color: { r: 235, g: 182, b:  62 } } # X <- nice
+            - { color: { r: 255, g: 221, b:   0 } } # yellow
+            - { color: { r: 255, g: 178, b:   0 } } # orange
+            - { color: { r: 231, g: 136, b:  52 } } # X
+            - { color: { r: 229, g: 115, b:  59 } }
+            - { color: { r: 218, g:  93, b:  65 } } # X
+            - { color: { r: 220, g:  75, b:  49 } }
+            # - { color: { r: 228, g: 145, b: 175 } }
+            # - { color: { r: 232, g: 190, b: 221 } }
+            - { color: { r: 217, g:  51, b: 124 } } # X
+            - { color: { r: 201, g: 132, b: 187 } } # X
+            - { color: { r: 143, g:  38, b: 134 } }
+            - { color: { r: 108, g: 131, b: 186 } } # X
+            - { color: { r:  74, g:  65, b: 138 } }
+            - { color: { r: 214, g: 228, b:  75 } } # last
+            - { color: { r: 169, g: 214, b:  43 } } #
+            # - { color: { r: 220, g: 240, b: 248 } } # first
+            # - { color: { r: 234, g: 246, b: 251 } }
+            - { color: { r: 245, g: 250, b: 246 } } # X cold white
+            # - { color: { r: 242, g: 236, b: 207 } }
+            - { color: { r: 241, g: 224, b: 181 } } # X normal white
+            - { color: { r: 239, g: 210, b: 117 } } # X warm white
+
+            # - { color: { r: 255, g: 147, b:  41 } } # candle
+            # - { color: { r: 255, g: 179, b: 102 } } # candle 2
+            # - { color: { r: 255, g: 117, b: 107 } } # aprikose
+            # - { color: { r: 255, g: 178, b:   0 } } # orange
+            # - { color: { r: 255, g: 221, b:   0 } } # yellow
+            # - { color: { r:  97, g: 255, b: 121 } } # gloom
+            # - { color: { r: 191, g: 102, b: 255 } } # flieder
+            # - { color: { r: 209, g: 224, b: 255 } } # blue sky
 
         - recordName: light-control/devices/Living Room
           brightnessConfig:
@@ -88,3 +156,9 @@ modules:
             - { pattern: "RAINBOW", size: 120, brightness: 1, saturation: 1, speed: -32, fps: 60 }
             - { pattern: "LINEAR_GRADIENT", size: 240, from: { r: 255, g:  0, b:  0, w: 0 }, to: { r:   0, g: 255, b: 0, w: 0 }, correction: null }
             - { pattern: "LINEAR_GRADIENT", size: 240, from: { r: 255, g: 80, b: 21, w: 0 }, to: { r: 255, g:  90, b: 0, w: 0 }, correction: null }
+
+  - component: tradfri-remote
+    config:
+      mqttDeviceName: Tradfri Remote 2
+      mqttUrl: mqtt://helios4.local
+      lightDevices: *tradfriLightDevices
