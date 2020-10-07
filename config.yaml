@@ -2,6 +2,7 @@ load:
   - iw-base/modules/udp-discovery
   - ./modules/light-device
   - ./modules/tradfri-remote
+  - ./modules/philips-dimmer-switch
 
 modules:
   - component: udp-discovery
@@ -23,6 +24,12 @@ modules:
       recordName: light-control/devices/Tradfri Bulb 1
       mqttDeviceName: Tradfri Bulb 1
       mqttUrl: mqtt://helios4.local
+
+  # - component: light-device
+  #   config:
+  #     recordName: light-control/devices/Philips Hue Bulb 1
+  #     mqttDeviceName: Philips Hue Bulb 1
+  #     mqttUrl: mqtt://helios4.local
 
   - component: tradfri-remote
     config:
@@ -70,8 +77,8 @@ modules:
             - { color_temp_percent: 50 }
             - { color_temp_percent: 0 }
 
-
-        - recordName: light-control/devices/Tradfri Bulb 1/set
+        - &readingLight
+          recordName: light-control/devices/Tradfri Bulb 1/set
           brightnessConfig:
             prop: "brightness"
             steps: 255
@@ -88,7 +95,7 @@ modules:
             color_temp_percent: null
             color: null
           templates: &ikeaTemplates
-            - { color: { r: 235, g: 182, b:  62 } } # X <- nice
+            - { color: { r: 255, g: 200, b:  50 } }
             - { color: { r: 255, g: 221, b:   0 } } # yellow
             - { color: { r: 255, g: 178, b:   0 } } # orange
             - { color: { r: 231, g: 136, b:  52 } } # X
@@ -162,3 +169,10 @@ modules:
       mqttDeviceName: Tradfri Remote 2
       mqttUrl: mqtt://helios4.local
       lightDevices: *tradfriLightDevices
+
+  - component: philips-dimmer-switch
+    config:
+      mqttDeviceName: Philips Hue Dimmer Switch 1
+      mqttUrl: mqtt://helios4.local
+      lightDevices:
+        - *readingLight
