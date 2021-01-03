@@ -81,7 +81,7 @@ export class TradfriRemote extends Service {
   }
 
   async stop() {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       this.client.end(undefined, undefined, resolve);
     });
     this.lightDevices.forEach((lightDevice) => {
