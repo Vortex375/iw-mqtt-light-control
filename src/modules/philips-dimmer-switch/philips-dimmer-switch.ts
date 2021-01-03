@@ -49,7 +49,7 @@ export class PhilipsDimmerSwitch extends Service {
   async start(config: PhilipsDimmerSwitchConfig) {
     this.setServiceName(config.mqttDeviceName);
     this.setState(State.BUSY);
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const remoteTopic = `zigbee2mqtt/${config.mqttDeviceName}`;
 
       this.client = mqtt.connect(config.mqttUrl);
