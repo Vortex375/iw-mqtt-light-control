@@ -1,10 +1,12 @@
 import { Service, State } from 'iw-base/lib/registry';
 import * as logging from 'iw-base/lib/logging';
+import { recordToObservable } from 'iw-base/lib/record-observable';
 import { IwDeepstreamClient } from 'iw-base/modules/deepstream-client';
 import { Component, Inject, Scoped } from 'iw-ioc';
 import { Record } from '@deepstream/client/dist/src/record/record';
 import * as mqtt from 'mqtt';
 import { assign } from 'lodash';
+import { throttleTime } from 'rxjs/operators';
 
 const log = logging.getLogger('LightDevice');
 
@@ -59,7 +61,11 @@ export class LightDevice extends Service {
     this.lightIsRecord = this.ds.getRecord(`${config.recordName}/is`);
     this.lightSetRecord = this.ds.getRecord(`${config.recordName}/set`);
     await this.lightSetRecord.whenReady();
-    this.lightSetRecord.subscribe(undefined, this.handleCommand.bind(this), true);
+
+    recordToObservable(this.lightSetRecord)
+      .pipe(throttleTime(50, undefined, { leading: false, trailing: true }))
+      .subscribe((cmd) => this.handleCommand(cmd));
+
     this.setState(State.OK);
   }
 
